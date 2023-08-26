@@ -1,0 +1,11 @@
+ext {
+    groups = [
+            flyway: "org.flywaydb"
+    ]
+    versions = [
+            flyway:"9.21.2"
+    ]
+libs=[
+        flyway: "$groups.flyway:flyway-core:$versions.flyway"
+]
+}

@@ -1,4 +1,4 @@
-package com.example.bespringboot.entity;
+package com.example.bespringgroovy.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

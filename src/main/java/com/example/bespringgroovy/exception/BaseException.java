@@ -1,4 +1,4 @@
-package com.example.bespringboot.exception;
+package com.example.bespringgroovy.exception;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,4 +1,4 @@
-package com.example.bespringboot.auditing;
+package com.example.bespringgroovy.auditing;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.example.bespringboot.exception;
+package com.example.bespringgroovy.exception;
 
 import org.springframework.http.HttpStatus;
 

@@ -1,4 +1,4 @@
-package com.example.bespringboot.entity;
+package com.example.bespringgroovy.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Role Entity Class <br>
+ * Category Entity Class <br>
  *
  * @author Tuyen Tran
  * @function_ID:
@@ -19,16 +19,18 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = false)
 @Data
 @Entity
-@Table(name = "role")
-public class Role extends BaseAuditing<String>{
-  private String name;
+@Table(name = "category")
+public class Category extends BaseAuditing<String> {
+  private String title;
+  private String content;
+  private String slug;
 
-  @ManyToMany(mappedBy = "roles")
-  Set<User> users = new HashSet<>();
+  @ManyToMany(mappedBy = "categories")
+  Set<Post> posts = new HashSet<>();
 
   @Override
   public String toString() {
-    return "Role={id=" + id + " " +
-      "name=" + name;
+    return "Category={id=" + id + " " +
+      "title=" + title;
   }
 }

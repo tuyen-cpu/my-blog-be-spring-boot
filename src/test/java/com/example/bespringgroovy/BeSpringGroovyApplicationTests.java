@@ -1,10 +1,10 @@
-package com.example.bespringboot;
+package com.example.bespringgroovy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BeSpringBootApplicationTests {
+class BeSpringGroovyApplicationTests {
 
 	@Test
 	void contextLoads() {

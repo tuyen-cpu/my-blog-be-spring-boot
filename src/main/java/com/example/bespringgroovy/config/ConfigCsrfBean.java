@@ -1,4 +1,4 @@
-package com.example.bespringboot.config;
+package com.example.bespringgroovy.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -23,12 +23,13 @@ public class ConfigCsrfBean {
   public ConfigCsrfBean(Environment env) {
     this.env = env;
   }
+
   public List<String> getAllowedOrigins() {
     String origins = env.getProperty("web.cors.allowed-origins", "");
     return Arrays.asList(origins.split(","));
   }
 
-  public List<String> getAllowedMethod() {
+  public List<String> getAllowedMethods() {
     String methods = env.getProperty("web.cors.allowed-methods", "");
     return Arrays.asList(methods.split(","));
   }

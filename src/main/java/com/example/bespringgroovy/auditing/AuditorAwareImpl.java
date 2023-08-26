@@ -1,4 +1,4 @@
-package com.example.bespringboot.auditing;
+package com.example.bespringgroovy.auditing;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

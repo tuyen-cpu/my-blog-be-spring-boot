@@ -1,4 +1,4 @@
-package com.example.bespringboot.entity;
+package com.example.bespringgroovy.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
