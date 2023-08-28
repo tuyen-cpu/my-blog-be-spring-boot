@@ -29,7 +29,7 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 public class User extends BaseAuditing<String> {
-  private String userName;
+  private String username;
   private String email;
   private String password;
   @Enumerated(EnumType.STRING)
@@ -48,8 +48,8 @@ public class User extends BaseAuditing<String> {
   }
   @Override
   public String toString() {
-    return "User={id=" + id + " " +
-      "userName=" + userName;
+    return "User={id=" + id + ", " +
+      "username=" + username +"}";
   }
   public enum UserStatus {
     ACTIVE,
