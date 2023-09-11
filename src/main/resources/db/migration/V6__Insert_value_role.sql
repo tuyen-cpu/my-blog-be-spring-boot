@@ -1,0 +1,1 @@
+INSERT INTO `myblog`.`role` (`name`) VALUES ('admin'),('user'),('editor');

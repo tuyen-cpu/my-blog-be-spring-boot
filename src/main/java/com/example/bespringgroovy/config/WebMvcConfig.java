@@ -15,12 +15,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
   @Autowired
-  private ConfigCsrfBean configCsrfBean;
+  private CorsProperties corsProperties;
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
-      .allowedOrigins(configCsrfBean.getAllowedOrigins().toArray(new String[0]))
-      .allowedMethods(configCsrfBean.getAllowedMethods().toArray(new String[0]))
+      .allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[0]))
+      .allowedMethods(corsProperties.getAllowedMethods().toArray(new String[0]))
       .allowedHeaders("*")
       .allowCredentials(true);
 //      .maxAge(MAX_AGE_SECS);

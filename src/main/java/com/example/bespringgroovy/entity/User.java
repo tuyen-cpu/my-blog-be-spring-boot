@@ -1,8 +1,10 @@
 package com.example.bespringgroovy.entity;
 
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,27 +26,42 @@ import java.util.Set;
  * @function_ID:
  * @screen_ID:
  */
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = false, exclude = "roles")
 @Data
 @Entity
 @Table(name = "user")
+@NoArgsConstructor
 public class User extends BaseAuditing<String> {
   private String username;
+
   private String email;
+
   private String password;
+
   @Enumerated(EnumType.STRING)
   @Column(columnDefinition = "enum")
   private UserStatus status;
+
+  @Enumerated(EnumType.STRING)
+  @Column(columnDefinition = "enum")
+  private AuthProvider provider;
+
+  private String name;
   @ManyToMany
     (cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
   @JoinTable(name = "user_has_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-  Set<Role> roles = new HashSet<>();
+  Set<Role> roles;
 
-  private void addRole(Role role) {
-    this.roles.add(role);
-  }
-  private void addRoles(Set<Role> roles) {
-    this.roles.addAll(roles);
+  @Builder
+  public User(String username,String name, String email, Set<Role> roles,
+              String password, AuthProvider provider, UserStatus status ) {
+    this.username = username;
+    this.name = name;
+    this.email = email;
+    this.roles = roles;
+    this.password = password;
+    this.provider = provider;
+    this.status = status;
   }
   @Override
   public String toString() {

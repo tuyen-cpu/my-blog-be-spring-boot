@@ -7,9 +7,11 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
  * @screen_ID:
  */
 @AllArgsConstructor
-public class UserDetailsCustom implements UserDetails {
+public class UserDetailsCustom implements UserDetails, OAuth2User {
   @Getter
   private Long id;
   private String username;
@@ -28,7 +30,7 @@ public class UserDetailsCustom implements UserDetails {
   private String email;
   private String password;
   private Collection<? extends GrantedAuthority> authorities;
-
+  private Map<String, Object> attributes;
   private static List<SimpleGrantedAuthority> getAuthorities(User user) {
     return user.getRoles().stream()
       .map(role -> new SimpleGrantedAuthority(role.getName()))
@@ -36,14 +38,23 @@ public class UserDetailsCustom implements UserDetails {
   }
 
   public static UserDetailsCustom build(User user) {
-    return new UserDetailsCustom(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), getAuthorities(user));
+    return new UserDetailsCustom(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), getAuthorities(user), null);
+  }
+  public static UserDetailsCustom build(User user,  Map<String, Object> attributes) {
+    return new UserDetailsCustom(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), getAuthorities(user), attributes);
+  }
+  @Override
+  public Map<String, Object> getAttributes() {
+    return attributes;
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return authorities;
   }
-
+  public void setAttributes(Map<String, Object> attributes) {
+    this.attributes = attributes;
+  }
 
   @Override
   public String getPassword() {
@@ -73,5 +84,10 @@ public class UserDetailsCustom implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
+  }
+
+  @Override
+  public String getName() {
+    return String.valueOf(id);
   }
 }
