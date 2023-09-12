@@ -1,6 +1,7 @@
 package com.example.bespringgroovy.service.impl;
 
 import com.example.bespringgroovy.entity.User;
+import com.example.bespringgroovy.exception.ResourceNotFoundException;
 import com.example.bespringgroovy.repo.UserRepo;
 import com.example.bespringgroovy.security.services.UserDetailsCustom;
 import com.example.bespringgroovy.service.UserService;
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     User user = userRepo.findByUsernameAndStatus(username, User.UserStatus.ACTIVE)
-      .orElseThrow(() -> new UsernameNotFoundException("Not found user with username: " + username));
+      .orElseThrow(() -> new ResourceNotFoundException("User","username", username));
     return UserDetailsCustom.build(user);
   }
 }
