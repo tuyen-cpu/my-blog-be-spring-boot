@@ -9,7 +9,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 /**
- * Class <br>
+ * CookieUtils Class. <br>
  *
  * @author Tuyen Tran
  * @function_ID:

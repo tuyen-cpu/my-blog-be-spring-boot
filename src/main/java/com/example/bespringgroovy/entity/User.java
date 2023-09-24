@@ -1,10 +1,12 @@
 package com.example.bespringgroovy.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.data.redis.core.RedisHash;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -50,7 +52,7 @@ public class User extends BaseAuditing<String> {
   @ManyToMany
     (cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
   @JoinTable(name = "user_has_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-  Set<Role> roles;
+  Set<Role> roles = new HashSet<>();
 
   @Builder
   public User(String username,String name, String email, Set<Role> roles,
@@ -65,8 +67,11 @@ public class User extends BaseAuditing<String> {
   }
   @Override
   public String toString() {
-    return "User={id=" + id + ", " +
-      "username=" + username +"}";
+    return "User{" +
+      "id='" + id + '\'' +
+      ", username='" + username + '\'' +
+      ", name='" + name + '\'' +
+      '}';
   }
   public enum UserStatus {
     ACTIVE,

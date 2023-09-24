@@ -3,10 +3,16 @@ package com.example.bespringgroovy.testBean;
 import com.example.bespringgroovy.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class <br>
@@ -18,15 +24,14 @@ import org.springframework.stereotype.Component;
 //@Component
 public class CommandLineAppStartupRunner implements CommandLineRunner {
 //  @Autowired
-//  private UserDetailsService userDetailsService;
-//  @Autowired
-//  private JwtUtils jwtUtils;
+//  private RedisTemplate<String, String> template;
+//  @Resource(name="redisTemplate")
+//  private ListOperations<String, String> listOps;
+
   @Override
   public void run(String... args) throws Exception {
-//   User user = (User) userDetailsService.loadUserByUsername("tuyen");
-//    ResponseCookie responseCookie =  jwtUtils.generateJwtCookie(user);
-//    jwtUtils.getUserNameFromJwtToken(responseCookie.getValue());
+//    template.opsForValue().set("loda","hello world");
 //
-//    boolean valida = jwtUtils.validateJwtToken(responseCookie.getValue());
+//    System.out.println("Value of key loda: "+template.opsForValue().get("loda"));
   }
 }

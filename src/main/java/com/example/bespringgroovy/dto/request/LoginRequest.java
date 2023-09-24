@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class LoginRequest {
   @NotBlank(message = "Username is required field")
-  private String username;
+  private String email;
   @NotBlank(message = "Password is required field")
   private String password;
 }
