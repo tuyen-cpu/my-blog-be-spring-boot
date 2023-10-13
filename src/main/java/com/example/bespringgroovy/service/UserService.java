@@ -14,9 +14,14 @@ import java.util.Optional;
  * @screen_ID:
  */
 public interface UserService {
+  User getById(Long id);
   Optional<User> getByUsernameAndStatus(String username, User.UserStatus status);
+
   User updateUserOauth2(User existingUser, OAuth2UserInfo oAuth2UserInfo);
+
   User addUserOauth2(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo);
 
- Optional<User> getByEmailAndStatusUser( String email,User.UserStatus status);
+  Optional<User> getByEmailAndStatusCheckCache(String email, User.UserStatus status);
+
+  User getByEmailAndStatus(String email, User.UserStatus status);
 }

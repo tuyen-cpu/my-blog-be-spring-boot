@@ -16,6 +16,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.SerializationUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
@@ -50,7 +51,7 @@ public class JwtUtils {
   public ResponseCookie generateJwtCookie(UserDetails userPrincipal) {
     String jwt = generateTokenFromUsername(userPrincipal.getUsername());
     return ResponseCookie.from(jwtCookieName, jwt).maxAge(cookieExpirationMs)
-      .httpOnly(true).build();
+      .httpOnly(false).build();
   }
   public String generateTokenFromUsername(String username) {
     Date now = new Date();
@@ -73,6 +74,13 @@ public class JwtUtils {
     return cookie.map(Cookie::getValue).orElse(null);
   }
 
+  public String parseJwt(HttpServletRequest request) {
+    String headerAuth = request.getHeader("Authorization");
+    if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+      return headerAuth.substring(7);
+    }
+    return null;
+  }
   public boolean validateJwtToken(String authToken) {
     try {
       Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);

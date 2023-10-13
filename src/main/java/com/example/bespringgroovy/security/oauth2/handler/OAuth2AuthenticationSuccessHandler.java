@@ -1,16 +1,20 @@
 package com.example.bespringgroovy.security.oauth2.handler;
 
 import com.example.bespringgroovy.config.AppProperties;
+import com.example.bespringgroovy.dto.response.UserResponse;
 import com.example.bespringgroovy.exception.BadRequestException;
 import com.example.bespringgroovy.security.jwt.JwtUtils;
 import com.example.bespringgroovy.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.bespringgroovy.security.services.UserDetailsCustom;
 import com.example.bespringgroovy.utils.CookieUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -22,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.bespringgroovy.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
@@ -63,12 +68,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-
-    ResponseCookie token = jwtUtils.generateJwtCookie((UserDetails) authentication.getPrincipal());
-    response.addHeader(HttpHeaders.SET_COOKIE,token.toString());
+    UserDetailsCustom userDetails = (UserDetailsCustom) authentication.getPrincipal();
+    String token = jwtUtils.generateTokenFromUsername(userDetails.getUsername());
 
     return UriComponentsBuilder.fromUriString(targetUrl)
-      .queryParam("token", response.getHeader(HttpHeaders.SET_COOKIE))
+      .queryParam("token", token)
       .build().toUriString();
   }
 
@@ -91,5 +95,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
         return false;
       });
+  }
+  private List<String> getRoles(UserDetails userDetails){
+    return userDetails.getAuthorities().stream()
+      .map(GrantedAuthority::getAuthority)
+      .toList();
   }
 }

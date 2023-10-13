@@ -49,6 +49,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Autowired
   private UserCacheService userCacheService;
+
+  @Override
+  public User getById(Long id) {
+    return userRepo.findById(id)
+      .orElseThrow(() -> new ResourceNotFoundException("User","Id", id));
+  }
+
   @Override
   public Optional<User> getByUsernameAndStatus(String username, User.UserStatus status) {
     return userRepo.findByUsernameAndStatus(username, status);
@@ -56,10 +63,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Override
   public User updateUserOauth2(User existingUser, OAuth2UserInfo oAuth2UserInfo) {
-    existingUser.setName(oAuth2UserInfo.getName());
+
+    User user = getByEmailAndStatus(existingUser.getEmail(), User.UserStatus.ACTIVE);
+    user.setName(oAuth2UserInfo.getName());
 //    existingUser.setImageUrl(oAuth2UserInfo.getImageUrl());
     long start = System.nanoTime();
-    User userSaved = userRepo.save(existingUser);
+    User userSaved = userRepo.save(user);
     long end = System.nanoTime();
     long timeTaken = end - start;
     log.debug("Time updated user: {} milliseconds", timeTaken/ 1_000_000);
@@ -94,7 +103,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Override
   @Transactional
-  public Optional<User> getByEmailAndStatusUser(String email, User.UserStatus status) {
+  public Optional<User> getByEmailAndStatusCheckCache(String email, User.UserStatus status) {
 
     if (userCacheService.exists(email)) {
       final User user = userCacheService.getUser(email);
@@ -104,10 +113,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
     final Optional<User> user = userRepo.findByEmailAndStatus(email, status);
     if(user.isPresent()) {
-      userCacheService.getUser(email);
+      userCacheService.saveUser(user.get());
       log.info("FindByEmailAndStatus() : cache insert >> " + user.get());
     }
     return user;
+  }
+
+  @Override
+  public User getByEmailAndStatus(String email, User.UserStatus status) {
+    return userRepo.findByEmailAndStatus(email, User.UserStatus.ACTIVE)
+      .orElseThrow(() -> new ResourceNotFoundException("User","email", email));
   }
 
   @Override

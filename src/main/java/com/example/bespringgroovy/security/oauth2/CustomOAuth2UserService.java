@@ -1,12 +1,8 @@
 package com.example.bespringgroovy.security.oauth2;
 
-import com.example.bespringgroovy.constant.RoleConstants;
 import com.example.bespringgroovy.entity.AuthProvider;
-import com.example.bespringgroovy.entity.Role;
 import com.example.bespringgroovy.entity.User;
 import com.example.bespringgroovy.exception.OAuth2AuthenticationProcessingException;
-import com.example.bespringgroovy.exception.ResourceNotFoundException;
-import com.example.bespringgroovy.repo.RoleRepo;
 import com.example.bespringgroovy.repo.UserRepo;
 import com.example.bespringgroovy.security.oauth2.user.OAuth2UserInfo;
 import com.example.bespringgroovy.security.oauth2.user.OAuth2UserInfoFactory;
@@ -14,12 +10,8 @@ import com.example.bespringgroovy.security.services.UserDetailsCustom;
 import com.example.bespringgroovy.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -31,7 +23,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * CustomOAuth2UserService Class. <br>
@@ -73,7 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
       throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
     }
     long start = System.nanoTime();
-    Optional<User> userOptional = userService.getByEmailAndStatusUser(oAuth2UserInfo.getEmail(), User.UserStatus.ACTIVE);
+    Optional<User> userOptional = userService.getByEmailAndStatusCheckCache(oAuth2UserInfo.getEmail(), User.UserStatus.ACTIVE);
     long end = System.nanoTime();
     long timeTaken = end - start;
     log.debug("Time select user: {} milliseconds", timeTaken / 1_000_000);
