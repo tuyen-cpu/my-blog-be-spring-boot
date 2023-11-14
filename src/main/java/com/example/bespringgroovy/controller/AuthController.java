@@ -1,5 +1,6 @@
 package com.example.bespringgroovy.controller;
 
+import com.example.bespringgroovy.dto.CurrentUser;
 import com.example.bespringgroovy.dto.request.LoginRequest;
 import com.example.bespringgroovy.dto.response.UserResponse;
 import com.example.bespringgroovy.security.jwt.JwtUtils;
@@ -62,10 +63,17 @@ public class AuthController {
       .toList();
   }
 
-
   @GetMapping("/me")
-  public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal UserDetailsCustom userPrincipal) {
-    return ResponseEntity.ok()
-      .body(new UserResponse(userPrincipal.getId(), userPrincipal.getUsername(), userPrincipal.getEmail(), getRoles(userPrincipal)));
+  public ResponseEntity<UserResponse> getCurrentUser(@CurrentUser UserDetailsCustom user) {
+    return ResponseEntity.ok().body(
+      UserResponse.builder()
+        .id(user.getId())
+        .username(user.getUsername())
+        .email(user.getEmail())
+        .roles(getRoles(user))
+        .build());
   }
+
+
+
 }

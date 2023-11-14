@@ -4,6 +4,7 @@ import com.example.bespringgroovy.entity.AuthProvider;
 import com.example.bespringgroovy.entity.User;
 import com.example.bespringgroovy.exception.OAuth2AuthenticationProcessingException;
 import com.example.bespringgroovy.repo.UserRepo;
+import com.example.bespringgroovy.security.oauth2.dto.EmailGithubResponse;
 import com.example.bespringgroovy.security.oauth2.user.OAuth2UserInfo;
 import com.example.bespringgroovy.security.oauth2.user.OAuth2UserInfoFactory;
 import com.example.bespringgroovy.security.services.UserDetailsCustom;
@@ -21,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -39,7 +43,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   private UserRepo userRepo;
   @Autowired
   private UserService userService;
-
+  @Autowired
+  private GitHubApiService gitHubApiService;
   @Override
   @Transactional
   public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -56,13 +61,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
   }
 
   private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
+    Map<String, Object> attributesCopy = new HashMap<>(oAuth2User.getAttributes());
     OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory
-      .getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
-
+      .getOAuth2UserInfo(oAuth2UserRequest.getClientRegistration().getRegistrationId(), attributesCopy);
     Assert.notNull(oAuth2UserInfo, "oAuth2UserInfo cannot be null");
-    if (!StringUtils.hasLength(oAuth2UserInfo.getEmail())) {
-      throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
+    String email = oAuth2UserInfo.getEmail();
+    if(StringUtils.isEmpty(email)) {
+      List<EmailGithubResponse> emails = gitHubApiService.getUserEmails(oAuth2UserRequest.getAccessToken().getTokenValue());
+      oAuth2UserInfo.setEmail(emails.get(0).getEmail());
     }
+
+//    if (!StringUtils.hasLength(oAuth2UserInfo.getEmail())) {
+//      throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
+//    }
     long start = System.nanoTime();
     Optional<User> userOptional = userService.getByEmailAndStatusCheckCache(oAuth2UserInfo.getEmail(), User.UserStatus.ACTIVE);
     long end = System.nanoTime();

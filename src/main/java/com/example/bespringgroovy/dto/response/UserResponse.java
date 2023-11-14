@@ -1,6 +1,7 @@
 package com.example.bespringgroovy.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Setter
 @Getter
 @AllArgsConstructor
+@Builder
 public class UserResponse {
   private Long id;
   private String username;

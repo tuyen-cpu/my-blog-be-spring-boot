@@ -19,7 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 /**
- * Class <br>
+ * AuthTokenFilter Class <br>
  *
  * @author Tuyen Tran
  * @function_ID:

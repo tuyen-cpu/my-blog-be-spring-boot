@@ -1,8 +1,10 @@
 package com.example.bespringgroovy.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,5 +34,9 @@ public class ConfigCsrfBean {
   public List<String> getAllowedMethods() {
     String methods = env.getProperty("web.cors.allowed-methods", "");
     return Arrays.asList(methods.split(","));
+  }
+  @Bean
+  public RestTemplate restTemplate() {
+    return new RestTemplate();
   }
 }
